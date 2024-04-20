@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { urlConfig } from '../../config';
+import {urlConfig} from '../../config';
 
 function SearchPage() {
-
     const [searchQuery, setSearchQuery] = useState('');
     const [ageRange, setAgeRange] = useState(6); // Initialize with minimum value
     const [searchResults, setSearchResults] = useState([]);
-
     const categories = ['Living', 'Bedroom', 'Bathroom', 'Kitchen', 'Office'];
     const conditions = ['New', 'Like New', 'Older'];
 
@@ -34,7 +32,6 @@ function SearchPage() {
     }, []);
 
 
-    // Task 2. Fetch search results from the API based on user inputs.
     const handleSearch = async () => {
         // Construct the search URL based on user input
         const baseUrl = `${urlConfig.backendUrl}/api/search?`;
@@ -44,6 +41,7 @@ function SearchPage() {
             category: document.getElementById('categorySelect').value,
             condition: document.getElementById('conditionSelect').value,
         }).toString();
+
         try {
             const response = await fetch(`${baseUrl}${queryParams}`);
             if (!response.ok) {
@@ -59,12 +57,8 @@ function SearchPage() {
     const navigate = useNavigate();
 
     const goToDetailsPage = (productId) => {
-        // Task 6. Enable navigation to the details page of a selected gift.
         navigate(`/app/product/${productId}`);
     };
-
-
-
 
     return (
         <div className="container mt-5">
@@ -81,6 +75,7 @@ function SearchPage() {
                                     <option key={category} value={category}>{category}</option>
                                 ))}
                             </select>
+
                             {/* Condition Dropdown */}
                             <label htmlFor="conditionSelect">Condition</label>
                             <select id="conditionSelect" className="form-control my-1">
@@ -89,8 +84,9 @@ function SearchPage() {
                                     <option key={condition} value={condition}>{condition}</option>
                                 ))}
                             </select>
+
                             {/* Age Range Slider */}
-                            <label htmlFor="ageRange">Age less than {ageRange} years</label>
+                            <label htmlFor="ageRange">Less than {ageRange} years</label>
                             <input
                                 type="range"
                                 className="form-control-range"
@@ -100,27 +96,28 @@ function SearchPage() {
                                 value={ageRange}
                                 onChange={e => setAgeRange(e.target.value)}
                             />
-                            {/* Search input */}
-                            <input
-                                type="text"
-                                className="form-control mt-2"
-                                placeholder="Search gifts..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                            />
-                            {/* Search Button */}
-                            <button className="btn btn-primary mt-2" onClick={handleSearch}>Search</button>
                         </div>
                     </div>
-                    {/* Search Results */}
+
+                    <input
+                        type="text"
+                        className="form-control mb-2"
+                        placeholder="Search for items..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)}
+                    />
+                    <button className="btn btn-primary" onClick={handleSearch}>Search</button>
                     <div className="search-results mt-4">
                         {searchResults.length > 0 ? (
                             searchResults.map(product => (
                                 <div key={product.id} className="card mb-3">
-                                    <img src={product.image || 'default_image.jpg'} alt={product.name} className="card-img-top" />
+                                    {/* Check if product has an image and display it */}
+                                    <img src={product.image} alt={product.name} className="card-img-top" />
                                     <div className="card-body">
                                         <h5 className="card-title">{product.name}</h5>
                                         <p className="card-text">{product.description.slice(0, 100)}...</p>
+                                    </div>
+                                    <div className="card-footer">
                                         <button onClick={() => goToDetailsPage(product.id)} className="btn btn-primary">
                                             View More
                                         </button>
